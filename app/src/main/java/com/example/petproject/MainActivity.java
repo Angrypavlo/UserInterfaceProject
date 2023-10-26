@@ -19,7 +19,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("BUTTONS", "User tapped the Supabutton");
-                setContentView(R.layout.list_of_countries);
+//                setContentView(R.layout.list_of_countries);
+                Intent intent = new Intent(MainActivity.this, ListOfCountriesActivity.class);
+                startActivity(intent);
+                finish();
+
             }
         });
     }
