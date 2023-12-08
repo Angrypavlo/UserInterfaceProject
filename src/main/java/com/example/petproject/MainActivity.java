@@ -2,6 +2,7 @@ package com.example.petproject;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,11 +18,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import android.location.Address;
 import android.location.Geocoder;
-
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
@@ -29,6 +31,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CardView infoCardView;
     private TextView countryTextView;
     private EditText emptyTextBox;
+    private Button addButton;
+
+    // Map to store notes for each country
+    private Map<String, String> countryNotesMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         infoCardView = findViewById(R.id.infoCardView);
         countryTextView = findViewById(R.id.countryTextView);
         emptyTextBox = findViewById(R.id.emptyTextBox);
+        addButton = findViewById(R.id.button);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNoteForCountry();
+            }
+        });
     }
 
     @Override
@@ -61,8 +75,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (!countryName.equals("Unknown")) {
             showInfoWindow(countryName);
+            addMarker(latLng, countryName);
         } else {
             hideInfoWindow();
+        }
+    }
+
+    private void addMarker(LatLng latLng, String title) {
+        if (googleMap != null) {
+            googleMap.clear(); // Clear existing markers
+            googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
         }
     }
 
@@ -96,4 +118,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void hideInfoWindow() {
         infoCardView.setVisibility(View.GONE);
     }
+
+    private void addNoteForCountry() {
+        String countryName = countryTextView.getText().toString();
+        String note = emptyTextBox.getText().toString();
+
+        // Check if the note is not empty before adding
+        if (!note.isEmpty()) {
+            countryNotesMap.put(countryName, note);
+            updateNotesTextView();
+        }
+    }
+
+    private void updateNotesTextView() {
+        StringBuilder notesBuilder = new StringBuilder("Notes:\n");
+        for (Map.Entry<String, String> entry : countryNotesMap.entrySet()) {
+            notesBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        TextView notesTextView = findViewById(R.id.notesTextView);
+        notesTextView.setText(notesBuilder.toString());
+    }
+    
 }
