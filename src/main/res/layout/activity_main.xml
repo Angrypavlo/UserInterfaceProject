@@ -31,22 +31,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- TextView to display country name -->
-        <TextView
-            android:id="@+id/countryTextView"
+        <!-- Vertical LinearLayout for country name and empty text box -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="32dp"
-            android:text="@string/country_name"
-            android:textSize="16sp" />
-        <EditText
-            android:id="@+id/emptyTextBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Empty Text Box"
-            android:padding="16dp"
-            android:textSize="16sp" />
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- TextView to display country name -->
+            <TextView
+                android:id="@+id/countryTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/country_name"
+                android:textSize="16sp" />
+
+            <!-- EditText for empty text box -->
+            <EditText
+                android:id="@+id/emptyTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Empty Text Box"
+                android:textSize="16sp" />
+            <!-- Button to add note -->
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Add Note"/>
+
+            <!-- TextView to display notes -->
+            <TextView
+                android:id="@+id/notesTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Notes:"
+                android:textSize="16sp" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
