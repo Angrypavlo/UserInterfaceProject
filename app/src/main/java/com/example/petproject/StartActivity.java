@@ -8,19 +8,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_start);
 
         Button button = (Button) findViewById(R.id.happy_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("BUTTONS", "User tapped the Supabutton");
 //                setContentView(R.layout.list_of_countries);
-                Intent intent = new Intent(MainActivity.this, ListOfCountriesActivity.class);
+                Intent intent = new Intent(StartActivity.this, ListOfCountriesActivity.class);
                 startActivity(intent);
                 finish();
 

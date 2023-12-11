@@ -17,7 +17,7 @@
             android:label="@string/title_activity_navigation"
             android:theme="@style/Theme.PetProject.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
