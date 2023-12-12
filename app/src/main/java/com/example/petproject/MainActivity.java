@@ -1,7 +1,6 @@
 package com.example.petproject;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +14,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button) findViewById(R.id.happy_button);
+        Button button = findViewById(R.id.happy_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("BUTTONS", "User tapped the Supabutton");
-                setContentView(R.layout.list_of_countries);
+                // Use Intent to switch to ListOfCountriesActivity
+                Intent intent = new Intent(MainActivity.this, ListOfCountriesActivity.class);
+                startActivity(intent);
             }
         });
     }
