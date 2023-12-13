@@ -15,7 +15,7 @@ public class ListOfCountriesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String[] countries = {"Usa", "Ukraine", "Turkey", "Austria", "Czech Republic","France","Spain","Portugal"};
+        String[] countries = {"Usa", "Ukraine", "Turkey", "Austria", "Czech Republic","France","Spain"};
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_of_countries);

@@ -3,35 +3,40 @@ package com.example.petproject;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
-
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.database.sqlite.SQLiteDatabase;
+import android.widget.LinearLayout;
+import android.content.Intent;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
 
 import com.example.petproject.CommentsAdapter;
 import com.example.petproject.Comment;
 import com.example.petproject.DatabaseHelper;
+
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
 
-public class AllCommentsActivity extends AppCompatActivity {
+public class AllCommentsActivity extends AppCompatActivity implements CommentsAdapter.OnItemClickListener {
 
     private List<Comment> allComments;
     private CommentsAdapter commentsAdapter;
-    private String selectedCountry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_comments);
 
-        selectedCountry = getIntent().getStringExtra("country");
+        String selectedCountry = getIntent().getStringExtra("country");
         if (selectedCountry != null) {
             getSupportActionBar().setTitle(selectedCountry);
         }
@@ -48,23 +53,40 @@ public class AllCommentsActivity extends AppCompatActivity {
         // Set data to the adapter
         commentsAdapter.setData(allComments);
 
+        // Set the click listener for the adapter
+        commentsAdapter.setOnItemClickListener(this);
+
         // Set up the buttons
         Button editButton = findViewById(R.id.buttonEditComment);
-        Button deleteButton = findViewById(R.id.buttonDeleteComment);
-
-        // Set click listeners for the buttons
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Determine the selected comment index
-                int selectedCommentIndex = getSelectedCommentIndex();
+                int selectedCommentIndex = commentsAdapter.getSelectedCommentIndex();
+
                 if (selectedCommentIndex != -1) {
-                    showEditDialog(selectedCommentIndex);
+                    // Get the selected comment
+                    Comment selectedComment = getSelectedComment(selectedCommentIndex);
+
+                    // Create an Intent to launch the Edit Comments Activity
+                    Intent intent = new Intent(AllCommentsActivity.this, AllCommentsResultActivity.class);
+
+                    // Pass the selected comment to the Edit Comments Activity
+                    intent.putExtra("selectedComment", selectedComment);
+
+                    // Start the Edit Comments Activity
+                    startActivity(intent);
                 } else {
-                    Toast.makeText(AllCommentsActivity.this, "Please select a comment", Toast.LENGTH_SHORT).show();
+                    // No comment is selected, you can choose to do nothing or show a different message
+                    // For example, you might want to show a Toast message indicating that no comment is selected
+                    Toast.makeText(AllCommentsActivity.this, "No comment selected", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
+
+        // Set up the buttons
+        Button deleteButton = findViewById(R.id.buttonDeleteComment);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,131 +97,43 @@ public class AllCommentsActivity extends AppCompatActivity {
         });
     }
 
-    // Function to show a dialog for editing comments
-    private void showEditDialog(final int selectedCommentIndex) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Edit Comment");
-
-        // Get the selected comment from the list
-        final Comment selectedComment = getSelectedComment(selectedCommentIndex);
-
-        // Create an EditText for the user to edit the comment
-        final EditText editText = new EditText(this);
-        editText.setText(selectedComment.getText());
-        builder.setView(editText);
-
-        // Set positive button to save the edited comment
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String editedText = editText.getText().toString();
-                if (!editedText.isEmpty()) {
-                    // Update the comment in the list
-                    selectedComment.setText(editedText);
-
-                    // Update the comment in the database
-                    editCommentInDatabase(selectedComment.getId(), editedText);
-
-                    // Refresh the UI
-                    refreshUI();
-                }
-            }
-        });
-
-        // Set negative button to cancel the edit
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-
-        // Save the AlertDialog to a variable to access its buttons later
-        final AlertDialog editAlertDialog = builder.create();
-
-        // Show the AlertDialog
-        editAlertDialog.show();
-
-        // Access the positive button of the AlertDialog
-        Button positiveButton = editAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        // Set a click listener for the positive button
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Determine if the comment is valid (not empty)
-                String editedText = editText.getText().toString();
-                if (!editedText.isEmpty()) {
-                    // Edit the comment
-                    editComment(selectedCommentIndex, editedText);
-
-                    // Dismiss the dialog
-                    editAlertDialog.dismiss();
-                } else {
-                    // Show an error message if the comment is empty
-                    Toast.makeText(AllCommentsActivity.this, "Comment cannot be empty", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    // Function to edit the comment in the list and database
-    private void editComment(int selectedCommentIndex, String editedText) {
-        // Update the comment in the list
-        Comment editedComment = allComments.get(selectedCommentIndex);
-        editedComment.setText(editedText);
-
-        // Update the comment in the database
-        editCommentInDatabase(editedComment.getId(), editedText);
-
-        // Refresh the UI
-        refreshUI();
-    }
-
-    // Function to get the selected comment from the list
+    // Add this method to get the selected comment from the list
     private Comment getSelectedComment(int selectedCommentIndex) {
-        return allComments.get(selectedCommentIndex);
-    }
-
-    // Function to determine the selected comment index
-    private int getSelectedCommentIndex() {
-        // You need to implement this based on how you determine the selected comment index.
-        // For example, if you have a selectedCommentId, you can iterate through the list to find its index.
-
-        long selectedCommentId = getSelectedCommentId();/* replace with the actual selected comment id */;
-        for (int i = 0; i < allComments.size(); i++) {
-            if (allComments.get(i).getId() == selectedCommentId) {
-                return i;
-            }
+        if (selectedCommentIndex >= 0 && selectedCommentIndex < allComments.size()) {
+            return allComments.get(selectedCommentIndex);
+        } else {
+            return null; // Handle the case where the index is out of bounds
         }
-
-        return -1; // Return -1 if the comment is not found (handle this case in the onClick)
     }
-    private long getSelectedCommentId() {
-        return getIntent().getLongExtra("selectedCommentId", -1);
+
+    @Override
+    public void onItemClick(int position) {
+        // Handle item click here, e.g., show edit dialog
+        Comment selectedComment = allComments.get(position);
+        showEditDialog(selectedComment);
     }
-    // Function to update the edited comment in the database
-    private void editCommentInDatabase(long commentId, String newCommentText) {
-        DatabaseHelper dbHelper = new DatabaseHelper(AllCommentsActivity.this);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_COMMENT, newCommentText);
+    private void showEditDialog(final Comment selectedComment) {
+        Log.d("AllCommentsActivity", "showEditDialog: Oluşturulan Intent: " + selectedComment.getText());
 
-        String selection = DatabaseHelper.COLUMN_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(commentId)};
-
-        database.update(DatabaseHelper.TABLE_COMMENTS, values, selection, selectionArgs);
-
-        dbHelper.close();
+        Intent intent = new Intent(AllCommentsActivity.this, AllCommentsResultActivity.class);
+        intent.putExtra("selectedComment", selectedComment);
+        startActivity(intent);
     }
 
     // Function to refresh the UI after editing a comment
     private void refreshUI() {
         // Retrieve the updated list of comments from the database
-        allComments = getAllComments(selectedCountry);
+        allComments = getAllCommentsFromDatabase();
 
         // Set data to the adapter
         commentsAdapter.setData(allComments);
+    }
+
+    // Function to retrieve all comments from the database
+    private List<Comment> getAllCommentsFromDatabase() {
+        String selectedCountry = getIntent().getStringExtra("country");
+        return getAllComments(selectedCountry);
     }
 
     // Function to retrieve all comments for a specific country from the database
