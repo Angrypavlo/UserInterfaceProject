@@ -12,8 +12,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class ListOfCountriesActivity extends AppCompatActivity {
-    ArrayAdapter<String> arrayAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String[] countries = {"Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
@@ -44,20 +45,44 @@ public class ListOfCountriesActivity extends AppCompatActivity {
                 "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
         };
 
+        ArrayAdapter<String> arrayAdapter;
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.nav_activity_main);
-        arrayAdapter = new ArrayAdapter<String>(this,R.layout.list_item, countries);
+        setContentView(R.layout.list_of_countries);
+        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, countries);
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
 
 
         autoCompleteTextView.setAdapter(arrayAdapter);
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String countries = adapterView.getItemAtPosition(i).toString();
-                Toast.makeText(ListOfCountriesActivity.this, "country" + countries, Toast.LENGTH_SHORT).show();
+//        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                String countries = adapterView.getItemAtPosition(i).toString();
+//                Toast.makeText(ListOfCountriesActivity.this, "country" + countries, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomAppBar);
+        bottomNavigationView.setSelectedItemId(R.id.list);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.settings:
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+
+                    finish();
+                    return true;
+
+                case R.id.map:
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+
+                    finish();
+                    return true;
+                case R.id.list:
+
+                    return true;
             }
+            return false;
         });
     }
 }

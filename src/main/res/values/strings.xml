@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Pet Project</string>
-    <string name="google_maps_api_key" templateMergeStrategy="preserve" translatable="false">your-api-key-here</string>
+    <string name="app_name">MapTrip</string>
     <string name="country_name">Country Name</string>
 </resources>

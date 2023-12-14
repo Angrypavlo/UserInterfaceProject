@@ -1,5 +1,6 @@
 package com.example.petproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -54,6 +55,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 addNoteForCountry();
             }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomAppBar);
+        bottomNavigationView.setSelectedItemId(R.id.map);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.settings:
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    finish();
+                    return true;
+
+                case R.id.map:
+                    return true;
+                case R.id.list:
+                    startActivity(new Intent(getApplicationContext(), ListOfCountriesActivity.class));
+//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+
+                    finish();
+                    return true;
+            }
+            return false;
         });
     }
 
@@ -138,5 +161,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView notesTextView = findViewById(R.id.notesTextView);
         notesTextView.setText(notesBuilder.toString());
     }
+
     
 }
