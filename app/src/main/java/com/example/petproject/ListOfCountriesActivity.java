@@ -7,10 +7,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ListOfCountriesActivity extends AppCompatActivity {
+    String country;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String[] countries = {"Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
@@ -49,13 +51,26 @@ public class ListOfCountriesActivity extends AppCompatActivity {
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
 
         autoCompleteTextView.setAdapter(arrayAdapter);
-//        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                String countries = adapterView.getItemAtPosition(i).toString();
-//                Toast.makeText(ListOfCountriesActivity.this, "country" + countries, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+
+
+
+
+
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                country = adapterView.getItemAtPosition(i).toString();
+            }
+        });
+        Button button = findViewById(R.id.addCommentButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCountryDetailActivity(country);
+
+            }
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomAppBar);
         bottomNavigationView.setSelectedItemId(R.id.list);
         bottomNavigationView.setOnItemSelectedListener(item -> {
