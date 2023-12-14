@@ -5,16 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
 import android.widget.TextView;
-import android.widget.CheckBox;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
-import android.widget.TextView;
 import android.util.Log;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
@@ -27,6 +22,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
             notifyItemRemoved(position);
         }
     }
+
     static class CommentViewHolder extends RecyclerView.ViewHolder {
 
         private CheckBox checkBoxComment;
@@ -41,9 +37,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         public void bind(String comment) {
             textViewComment.setText(comment);
         }
-
-
     }
+
     private List<Comment> comments = new ArrayList<>();
     private OnEditClickListener onEditClickListener;
     private OnItemClickListener onItemClickListener;
@@ -114,14 +109,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
                 setSelectedCommentIndex(updatedPosition);
             }
         });
-
     }
-
 
     @Override
     public int getItemCount() {
         return comments.size();
     }
-
-
 }
