@@ -22,13 +22,13 @@ public class SettingActivity extends AppCompatActivity {
 
                 case R.id.map:
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
 
                     finish();
                     return true;
                 case R.id.list:
                     startActivity(new Intent(getApplicationContext(), ListOfCountriesActivity.class));
-//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
 
                     finish();
                     return true;

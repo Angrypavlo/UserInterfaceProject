@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -55,11 +56,14 @@ public class ListOfCountriesActivity extends AppCompatActivity {
 
 
 
-
+        TextView textView = findViewById(R.id.countryTextView);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 country = adapterView.getItemAtPosition(i).toString();
+                textView.setVisibility(View.VISIBLE);
+
+
             }
         });
         Button button = findViewById(R.id.addCommentButton);
@@ -77,14 +81,14 @@ public class ListOfCountriesActivity extends AppCompatActivity {
             switch (item.getItemId()){
                 case R.id.settings:
                     startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
 
                     finish();
                     return true;
 
                 case R.id.map:
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
 
                     finish();
                     return true;

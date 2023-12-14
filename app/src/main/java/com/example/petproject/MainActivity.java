@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             switch (item.getItemId()){
                 case R.id.settings:
                     startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
                     finish();
                     return true;
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return true;
                 case R.id.list:
                     startActivity(new Intent(getApplicationContext(), ListOfCountriesActivity.class));
-//                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
 
                     finish();
                     return true;

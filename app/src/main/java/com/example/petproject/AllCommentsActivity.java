@@ -95,10 +95,12 @@ public class AllCommentsActivity extends AppCompatActivity implements CommentsAd
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         try {
             // Debugging log statements
+
             Log.d("DeleteComment", "Comment ID to delete: " + comment.getId());
 
             String selection = DatabaseHelper.COLUMN_ID + " = ?";
-            String[] selectionArgs = {String.valueOf(comment.getId())};
+            String[] selectionArgs = {String.valueOf(comment.getText())};
+
 
             // Debugging log statements
             Log.d("DeleteComment", "Selection: " + selection);
@@ -109,11 +111,13 @@ public class AllCommentsActivity extends AppCompatActivity implements CommentsAd
                     selection,
                     selectionArgs
             );
+            Log.d("DeleteComment", "Rows to delete:" + deletedRows);
+            commentsAdapter.removeComment(comment);
+
             dbHelper.close();
 
             if (deletedRows > 0) {
                 // Get the selected comment index and remove it from the adapter
-                commentsAdapter.removeComment(comment);
 
                 // Refresh the UI after deletion
                 refreshUI();
