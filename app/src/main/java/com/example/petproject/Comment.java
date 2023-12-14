@@ -11,6 +11,7 @@ public class Comment implements Parcelable {
     public long getId() {
         return id;
     }
+    public static final String COLUMN_ID = "_id";
 
     public void setId(long id) {
         this.id = id;

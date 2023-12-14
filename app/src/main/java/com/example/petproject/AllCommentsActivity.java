@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import android.util.Log;
+import android.database.Cursor;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,11 +77,14 @@ public class AllCommentsActivity extends AppCompatActivity implements CommentsAd
         try {
             String selection = DatabaseHelper.COLUMN_ID + " = ?";
             String[] selectionArgs = {String.valueOf(comment.getId())};
+
             int deletedRows = database.delete(
                     DatabaseHelper.TABLE_COMMENTS,
                     selection,
                     selectionArgs
             );
+            Log.d("DeleteComment", "Deleted Rows: " + deletedRows);
+
             dbHelper.close();
 
             if (deletedRows > 0) {
@@ -92,6 +97,8 @@ public class AllCommentsActivity extends AppCompatActivity implements CommentsAd
         } catch (Exception e) {
             Log.e("DeleteComment", "Error deleting comment: " + e.getMessage());
             Toast.makeText(this, "Error deleting comment", Toast.LENGTH_SHORT).show();
+        }finally {
+            dbHelper.close();
         }
     }
 
@@ -117,7 +124,44 @@ public class AllCommentsActivity extends AppCompatActivity implements CommentsAd
     private List<Comment> getAllComments(String country) {
         List<Comment> comments = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        //... (Existing code to fetch comments from the database)
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String[] projection = {
+                DatabaseHelper.COLUMN_ID,
+                DatabaseHelper.COLUMN_COMMENT
+                // Add other columns as needed
+        };
+
+        String selection = DatabaseHelper.COLUMN_COUNTRY + " = ?";
+        String[] selectionArgs = {country};
+
+        Cursor cursor = database.query(
+                DatabaseHelper.TABLE_COMMENTS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int columnIndexId = cursor.getColumnIndex(DatabaseHelper.COLUMN_ID);
+            int columnIndexComment = cursor.getColumnIndex(DatabaseHelper.COLUMN_COMMENT);
+
+            do {
+                long id = cursor.getLong(columnIndexId);
+                String commentText = cursor.getString(columnIndexComment);
+
+                Comment comment = new Comment(commentText);
+                comment.setId(id);
+                comments.add(comment);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        dbHelper.close();
         return comments;
     }
 

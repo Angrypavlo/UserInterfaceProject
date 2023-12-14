@@ -6,6 +6,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import android.database.sqlite.SQLiteDatabase;
+import android.content.ContentValues;
+import android.widget.Toast;
+import android.util.Log;
 
 public class AllCommentsResultActivity extends AppCompatActivity {
 
@@ -21,12 +25,11 @@ public class AllCommentsResultActivity extends AppCompatActivity {
         selectedComment = getIntent().getParcelableExtra("selectedComment");
 
         editTextComment = findViewById(R.id.editTextUpdatedComment);
-        Button saveButton = findViewById(R.id.buttonSave);
 
         // Set the existing comment text in the EditText
         editTextComment.setText(selectedComment.getText());
 
-        // Save button click listener
+        Button saveButton = findViewById(R.id.buttonSave);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,12 +45,40 @@ public class AllCommentsResultActivity extends AppCompatActivity {
         // Update the selected comment with the new text
         selectedComment.setText(updatedText);
 
-        // TODO: Implement the logic to save the updated comment to the database
-        // DatabaseHelper dbHelper = new DatabaseHelper(AllCommentsResultActivity.this);
-        // dbHelper.updateComment(selectedComment);
+        // Log the selected comment ID for debugging
+        Log.d("AllCommentsResultActivity", "Selected Comment ID: " + selectedComment.getId());
 
-        // Optional: You can set a result to indicate success or failure
-        setResult(RESULT_OK);
-        finish();
+        // Ensure that selectedComment is not null and has a valid ID
+        if (selectedComment != null && selectedComment.getId() > 0) {
+            // Update the comment in the database
+            DatabaseHelper dbHelper = new DatabaseHelper(AllCommentsResultActivity.this);
+            SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.COLUMN_COMMENT, updatedText);
+
+            String selection = DatabaseHelper.COLUMN_ID + " = ?";
+            String[] selectionArgs = {String.valueOf(selectedComment.getId())};
+
+            int updatedRows = database.update(
+                    DatabaseHelper.TABLE_COMMENTS,
+                    values,
+                    selection,
+                    selectionArgs
+            );
+
+            dbHelper.close();
+
+            if (updatedRows > 0) {
+                // Optional: You can set a result to indicate success or failure
+                setResult(RESULT_OK);
+                finish();
+                Toast.makeText(this, "Comment updated", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to update comment", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.e("AllCommentsResultActivity", "Selected Comment is null or has an invalid ID");
+        }
     }
 }
