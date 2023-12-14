@@ -11,10 +11,10 @@
         android:layout_margin="16dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         >
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="none"/>
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"/>
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
