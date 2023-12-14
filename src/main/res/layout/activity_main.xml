@@ -17,17 +17,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
-    <!-- SearchView at the top -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#80FFFFFF"
-        android:queryHint="Search for a location"
-        app:iconifiedByDefault="false"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- CardView for information window -->
     <androidx.cardview.widget.CardView
@@ -64,14 +53,6 @@
                 android:layout_height="wrap_content"
                 android:hint="Empty Text Box"
                 android:textSize="16sp" />
-            <ImageButton
-                android:id="@+id/galleryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:contentDescription="@string/gallery_button_description"
-                android:background="?android:selectableItemBackground"
-                android:onClick="onGalleryButtonClick" />
             <!-- Button to add note -->
             <Button
                 android:id="@+id/button"
@@ -88,7 +69,6 @@
                 android:layout_marginTop="8dp"
                 android:text="Notes:"
                 android:textSize="16sp" />
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
