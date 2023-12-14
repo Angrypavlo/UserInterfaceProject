@@ -88,7 +88,7 @@ public class ListOfCountriesActivity extends AppCompatActivity {
 
                 case R.id.map:
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+                    overridePendingTransition(R.anim.slide_left_opposite, R.anim.slide_right_opposite);
 
                     finish();
                     return true;
