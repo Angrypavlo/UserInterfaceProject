@@ -11,20 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
-    // Add this method to remove a comment
-    public void removeComment(Comment comment) {
-        int position = comments.indexOf(comment);
-        if (position != -1) {
-            comments.remove(position);
-            notifyItemRemoved(position);
-        }
-    }
+    private List<Comment> comments = new ArrayList<>();
+    private OnEditClickListener onEditClickListener;
+    private OnItemClickListener onItemClickListener;
+    private Comment selectedComment;
 
     static class CommentViewHolder extends RecyclerView.ViewHolder {
-
         private CheckBox checkBoxComment;
         private TextView textViewComment;
 
@@ -39,11 +35,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         }
     }
 
-    private List<Comment> comments = new ArrayList<>();
-    private OnEditClickListener onEditClickListener;
-    private OnItemClickListener onItemClickListener;
-    private List<Comment> selectedComments = new ArrayList<>();
-    private int selectedCommentIndex = -1; // Variable to store the selected comment index
+    public void setData(List<Comment> comments) {
+        this.comments = comments;
+        notifyDataSetChanged();
+    }
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -56,25 +51,25 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     public interface OnEditClickListener {
         void onEditClick(Comment comment);
     }
-
+    public void removeComment(Comment comment) {
+        if (comments != null && comments.contains(comment)) {
+            comments.remove(comment);
+            notifyDataSetChanged();
+        }
+    }
     public void setOnEditClickListener(OnEditClickListener listener) {
         this.onEditClickListener = listener;
     }
 
-    // Add this method to get the selected comment index
-    public int getSelectedCommentIndex() {
-        return selectedCommentIndex;
+    public void setSelectedCommentIndex(int position) {
+        if (position >= 0 && position < comments.size()) {
+            selectedComment = comments.get(position);
+            notifyDataSetChanged();
+        }
     }
 
-    // Modify this method to set the selected comment index
-    public void setSelectedCommentIndex(int index) {
-        selectedCommentIndex = index;
-        notifyDataSetChanged(); // Notify the adapter that data has changed
-    }
-
-    public void setData(List<Comment> comments) {
-        this.comments = comments;
-        notifyDataSetChanged();
+    public Comment getSelectedComment() {
+        return selectedComment;
     }
 
     @NonNull
@@ -89,24 +84,19 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         Comment comment = comments.get(position);
         holder.bind(comment.getText());
 
-        // CheckBox'ın durumunu izle ve seçilen yorumları güncelle
-        holder.checkBoxComment.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // CheckBox işaretlendiğinde, seçilen yorumları listeye ekle
-                    selectedComments.add(comment);
-                } else {
-                    // CheckBox işareti kaldırıldığında, seçilen yorumları listeden çıkar
-                    selectedComments.remove(comment);
-                }
+        holder.checkBoxComment.setChecked(selectedComment != null && selectedComment.equals(comment));
 
-                // Log statements for debugging
-                int updatedPosition = holder.getAdapterPosition();
-                Log.d("CommentsAdapter", "Position: " + updatedPosition + ", isChecked: " + isChecked);
+        holder.checkBoxComment.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                selectedComment = comment;
+            } else if (selectedComment != null && selectedComment.equals(comment)) {
+                selectedComment = null;
+            }
+        });
 
-                // Update the selected index
-                setSelectedCommentIndex(updatedPosition);
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(position);
             }
         });
     }
