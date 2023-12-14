@@ -1,16 +1,12 @@
 package com.example.petproject;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -52,7 +48,6 @@ public class ListOfCountriesActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, countries);
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
 
-
         autoCompleteTextView.setAdapter(arrayAdapter);
 //        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -84,5 +79,11 @@ public class ListOfCountriesActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    private void openCountryDetailActivity(String selectedCountry) {
+        Intent intent = new Intent(ListOfCountriesActivity.this, CountryDetailActivity.class);
+        intent.putExtra("country", selectedCountry);
+        startActivity(intent);
     }
 }

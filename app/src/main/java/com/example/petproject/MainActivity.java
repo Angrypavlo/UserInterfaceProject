@@ -1,5 +1,6 @@
 package com.example.petproject;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -111,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+}
+
 
     private void moveMapToSearchedCountry(String countryName) {
         Geocoder geocoder = new Geocoder(this);
