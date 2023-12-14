@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -18,6 +19,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +32,7 @@ import java.util.Map;
 import android.location.Address;
 import android.location.Geocoder;
 
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     private GoogleMap googleMap;
@@ -33,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView countryTextView;
     private EditText emptyTextBox;
     private Button addButton;
+    private SearchView searchView;
 
     // Map to store notes for each country
     private Map<String, String> countryNotesMap = new HashMap<>();
@@ -44,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
         mapFragment.getMapAsync(this);
+        setupSearchView();
 
         infoCardView = findViewById(R.id.infoCardView);
         countryTextView = findViewById(R.id.countryTextView);
@@ -56,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 addNoteForCountry();
             }
         });
-
+        // Load existing notes from file when the app starts
+        loadNotesFromFile();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomAppBar);
         bottomNavigationView.setSelectedItemId(R.id.map);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -80,15 +90,58 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    private void setupSearchView() {
+        searchView = findViewById(R.id.searchView);
+
+        // Set up search action
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Handle the search query submission
+                // Move the map to the location of the searched country
+                moveMapToSearchedCountry(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Handle changes in the search query text
+                // Update suggestions or perform real-time filtering
+                return true;
+            }
+        });
+    }
+
+    private void moveMapToSearchedCountry(String countryName) {
+        Geocoder geocoder = new Geocoder(this);
+
+        try {
+            // Get the list of addresses for the given country name
+            List<Address> addresses = geocoder.getFromLocationName(countryName, 1);
+
+            if (!addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                double latitude = address.getLatitude();
+                double longitude = address.getLongitude();
+
+                LatLng location = new LatLng(latitude, longitude);
+
+                // Move the map to the location of the searched country
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 5));
+                addMarker(location, countryTextView.getText().toString());
+            } else {
+                // Handle case when no address is found for the given country name
+                // You can show a toast or log a message
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.setOnMapClickListener(this);
-
-        // Example marker for demonstration
-        LatLng markerPosition = new LatLng(0, 0);
-        googleMap.addMarker(new MarkerOptions().position(markerPosition).title("Marker"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
     }
 
     @Override
@@ -150,9 +203,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!note.isEmpty()) {
             countryNotesMap.put(countryName, note);
             updateNotesTextView();
+            saveNotesToFile(); // Save notes to file after adding
         }
     }
-
     private void updateNotesTextView() {
         StringBuilder notesBuilder = new StringBuilder("Notes:\n");
         for (Map.Entry<String, String> entry : countryNotesMap.entrySet()) {
@@ -160,7 +213,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         TextView notesTextView = findViewById(R.id.notesTextView);
         notesTextView.setText(notesBuilder.toString());
+        saveNotesToFile();
+    }
+    private void saveNotesToFile() {
+        try {
+            File file = new File(getExternalFilesDir(null), "notes.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+            for (Map.Entry<String, String> entry : countryNotesMap.entrySet()) {
+                writer.write(entry.getKey() + ":" + entry.getValue() + "\n");
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    
+    private void loadNotesFromFile() {
+        try {
+            File file = new File(getExternalFilesDir(null), "notes.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(":");
+                if (parts.length == 2) {
+                    countryNotesMap.put(parts[0], parts[1]);
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void onGalleryButtonClick(View view) {
+
+    }
 }
