@@ -4,18 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.TextView;
 
+import com.example.petproject.updatepart.AllPlaylists;
+import com.example.petproject.updatepart.ListOfListsOfNotes;
+import com.example.petproject.updatepart.Note;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ListOfCountriesActivity extends AppCompatActivity {
     String country;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        createNotes();
         String[] countries = {"Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
                 "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain",
                 "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia",
@@ -56,16 +58,7 @@ public class ListOfCountriesActivity extends AppCompatActivity {
 
 
 
-        TextView textView = findViewById(R.id.countryTextView);
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                country = adapterView.getItemAtPosition(i).toString();
-                textView.setVisibility(View.VISIBLE);
 
-
-            }
-        });
         Button button = findViewById(R.id.addCommentButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +68,15 @@ public class ListOfCountriesActivity extends AppCompatActivity {
             }
         });
 
+        Button buttonPlaylist = findViewById(R.id.listOfAllNotes);
+        buttonPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), ListOfListsOfNotes.class));
+                finish();
+
+            }
+        });
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomAppBar);
         bottomNavigationView.setSelectedItemId(R.id.list);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -104,5 +106,28 @@ public class ListOfCountriesActivity extends AppCompatActivity {
         Intent intent = new Intent(ListOfCountriesActivity.this, CountryDetailActivity.class);
         intent.putExtra("country", selectedCountry);
         startActivity(intent);
+    }
+    public void createNotes(){
+        Note note1 = new Note(1,"Best trip","Content", "France");
+        Note note2 = new Note(2,"Medium Trip","Content", "Germany");
+        Note note3 = new Note(3,"Baza","Content", "France");
+        Note note4 = new Note(4,"Example","Content", "Ukraine");
+        Note note5 = new Note(5,"Love","Content", "Turkey");
+        Note note6 = new Note(6,"Rock","Content", "USA");
+        Note note7 = new Note(7,"Mission","Content", "France");
+//        Note note8 = new Note(8,"Work trip","Content", "Poland");
+//        Note note9 = new Note(9,"Studies1","Content", "Lithuania");
+//        Note note10 = new Note(10,"Erasmus","Content", "Czech republic");
+        Note.noteArrayList.add(note1);
+        Note.noteArrayList.add(note2);
+        Note.noteArrayList.add(note3);
+        Note.noteArrayList.add(note4);
+        Note.noteArrayList.add(note5);
+        Note.noteArrayList.add(note6);
+        Note.noteArrayList.add(note7);
+
+//        Note.noteArrayList.add(note8);
+//        Note.noteArrayList.add(note9);
+//        Note.noteArrayList.add(note10);
     }
 }

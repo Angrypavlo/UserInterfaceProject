@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".updatepart.SelectedPlayList">
+
+    <Button
+        android:id="@+id/playListButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back to Lists"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </Button>
+    <Button
+        android:id="@+id/editPlaylist"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add items to the Lists"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </Button>
+    <Button
+        android:id="@+id/deleteItemsFromListButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+
+        android:text="Delete items in the Lists"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </Button>
+    <Button
+        android:layout_marginTop="120dp"
+        android:id="@+id/deleteListButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete List"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </Button>
+
+    <ListView
+        android:id="@+id/allBestListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="160dp"
+        android:dividerHeight="3dp"
+        android:choiceMode="multipleChoice"
+        app:layout_constraintBottom_toBottomOf="@+id/deleteListButton"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.948"
+        tools:layout_editor_absoluteX="-16dp"></ListView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
